@@ -1,3 +1,18 @@
+console.log("Type of COOKIES:", typeof process.env.COOKIES);
+console.log("Raw COOKIES from env:", process.env.COOKIES);
+
+let cookies;
+try {
+    if (typeof process.env.COOKIES === "string") {
+        cookies = JSON.parse(process.env.COOKIES);
+    } else {
+        cookies = process.env.COOKIES; // Already parsed
+    }
+    console.log("Parsed Cookies:", cookies);
+} catch (error) {
+    console.error("❌ Failed to parse cookies:", error);
+    process.exit(1);
+}
 const puppeteer = require('puppeteer');
 
 (async () => {
