@@ -2,15 +2,16 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
-// Sleep function to avoid nesting timeouts
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 (async () => {
     while (true) {
         try {
             console.log("Starting browser...");
+            
             const browser = await puppeteer.launch({
-                headless: true, 
+                headless: true,
+                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || await puppeteer.executablePath(), // Ensure Chrome is found
                 args: [
                     "--no-sandbox",
                     "--disable-setuid-sandbox",
@@ -21,11 +22,8 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
             });
 
             const page = await browser.newPage();
-
-            // Path to the cookies file
             const cookiesFilePath = path.join(__dirname, 'cookies.json');
 
-            // Load saved cookies
             if (fs.existsSync(cookiesFilePath)) {
                 try {
                     const cookies = JSON.parse(fs.readFileSync(cookiesFilePath, 'utf8'));
@@ -33,7 +31,6 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                 } catch (error) {
                     console.error("Error reading cookies.json:", error);
                     await browser.close();
-                    console.log("Exiting process due to invalid cookies.");
                     process.exit(1);
                 }
             } else {
@@ -41,23 +38,22 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
                 process.exit(1);
             }
 
-            // Visit the required page
             console.log("Visiting site...");
             await page.goto('https://optiklink.com/', { waitUntil: 'networkidle2' });
 
             console.log('Visited successfully! Staying on the page for 2 minutes...');
-            await sleep(2 * 60 * 1000); // Wait for 2 minutes
+            await sleep(2 * 60 * 1000);
 
             await browser.close();
             console.log('Browser closed.');
-
+            
             console.log('Waiting 12 hours before next visit...');
-            await sleep(12 * 60 * 60 * 1000); // Wait for 12 hours
+            await sleep(12 * 60 * 60 * 1000);
 
         } catch (error) {
             console.error("An error occurred:", error);
             console.log("Restarting in 30 minutes...");
-            await sleep(30 * 60 * 1000); // Wait 30 minutes before retrying
+            await sleep(30 * 60 * 1000);
         }
     }
 })();
