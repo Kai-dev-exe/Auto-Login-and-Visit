@@ -1,4 +1,12 @@
 const puppeteer = require("puppeteer");
+const express = require("express");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// ✅ Express server to prevent Render port errors
+app.get("/", (req, res) => res.send("Puppeteer script is running..."));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // ✅ Debugging - Check environment variable
 console.log("Type of COOKIES:", typeof process.env.COOKIES);
