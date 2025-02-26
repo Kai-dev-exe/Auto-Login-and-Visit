@@ -31,7 +31,7 @@ try {
 
 (async () => {
     console.log("Starting browser...");
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
     // ✅ Only set cookies if correctly parsed
