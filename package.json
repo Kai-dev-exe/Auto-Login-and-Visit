@@ -4,7 +4,8 @@
   "description": "A Puppeteer bot running on Render",
   "main": "auto-visit.js",
   "scripts": {
-    "start": "npx puppeteer browsers install chrome && node auto-visit.js"
+    "start": "node auto-visit.js",
+    "postinstall": "npx puppeteer browsers install chrome"
   },
   "dependencies": {
     "puppeteer": "^24.3.0"
