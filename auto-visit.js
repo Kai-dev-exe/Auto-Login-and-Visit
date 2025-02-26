@@ -11,7 +11,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
             const browser = await puppeteer.launch({
                 headless: true,
-                executablePath: '/opt/render/.cache/puppeteer/chrome/linux-133.0.6943.126/chrome-linux64/chrome', // Manually set the path
+                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
                 args: [
                     "--no-sandbox",
                     "--disable-setuid-sandbox",
