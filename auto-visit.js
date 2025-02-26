@@ -32,7 +32,7 @@ try {
         process.exit(1);
     }
 
-    await page.goto("https://optiklink.com", { waitUntil: "networkidle2" });
+    await page.goto("https://optiklink.com", { waitUntil: "networkidle2", timeout: 60000 });
 
     console.log("Visited successfully! Staying on the page for 2 minutes...");
     await new Promise(resolve => setTimeout(resolve, 2 * 60 * 1000));
