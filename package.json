@@ -1,13 +1,8 @@
 {
-  "name": "my-puppeteer-bot",
-  "version": "1.0.0",
-  "description": "A Puppeteer bot running on Render",
-  "main": "auto-visit.js",
-  "scripts": {
-    "postinstall": "npx puppeteer browsers install chrome",
-    "start": "node auto-visit.js"
-  },
   "dependencies": {
     "puppeteer": "^24.3.0"
+  },
+  "scripts": {
+    "postinstall": "npx puppeteer browsers install chrome"
   }
 }
