@@ -1,58 +1,35 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs');
-const path = require('path');
-
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 (async () => {
     while (true) {
-        try {
-            console.log("Starting browser...");
+        console.log("Starting browser...");
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
 
-            const browser = await puppeteer.launch({
-                headless: true,
-                args: [
-                    "--no-sandbox",
-                    "--disable-setuid-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--disable-gpu",
-                    "--single-process"
-                ]
-            });
+        // Load cookies from environment variable
+        const cookiesEnv = process.env.COOKIES;  // Make sure COOKIES is set in Render
 
-            const page = await browser.newPage();
-            const cookiesFilePath = path.join(__dirname, 'cookies.json');
-
-            if (fs.existsSync(cookiesFilePath)) {
-                try {
-                    const cookies = JSON.parse(fs.readFileSync(cookiesFilePath, 'utf8'));
-                    await page.setCookie(...cookies);
-                } catch (error) {
-                    console.error("Error reading cookies.json:", error);
-                    await browser.close();
-                    process.exit(1);
-                }
-            } else {
-                console.log("No saved cookies found. Please run save_cookies.js first.");
-                process.exit(1);
-            }
-
-            console.log("Visiting site...");
-            await page.goto('https://optiklink.com/', { waitUntil: 'networkidle2' });
-
-            console.log('Visited successfully! Staying on the page for 2 minutes...');
-            await sleep(2 * 60 * 1000);
-
-            await browser.close();
-            console.log('Browser closed.');
-            
-            console.log('Waiting 12 hours before next visit...');
-            await sleep(12 * 60 * 60 * 1000);
-
-        } catch (error) {
-            console.error("An error occurred:", error);
-            console.log("Restarting in 30 minutes...");
-            await sleep(30 * 60 * 1000);
+        if (!cookiesEnv) {
+            console.log("No saved cookies found in ENV. Set the COOKIES environment variable.");
+            process.exit(1);
         }
+
+        try {
+            const cookies = JSON.parse(cookiesEnv);
+            await page.setCookie(...cookies);
+        } catch (error) {
+            console.log("Error parsing cookies:", error);
+            process.exit(1);
+        }
+
+        await page.goto('https://optiklink.com/', { waitUntil: 'networkidle2' });
+
+        console.log('Visited successfully! Staying on the page for 2 minutes...');
+        await new Promise(resolve => setTimeout(resolve, 2 * 60 * 1000));
+
+        await browser.close();
+        console.log('Browser closed. Waiting 12 hours before next visit...');
+        
+        await new Promise(resolve => setTimeout(resolve, 12 * 60 * 60 * 1000));
     }
 })();
