@@ -8,10 +8,10 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     while (true) {
         try {
             console.log("Starting browser...");
-            
+
             const browser = await puppeteer.launch({
                 headless: true,
-                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || await puppeteer.executablePath(), // Ensure Chrome is found
+                executablePath: '/opt/render/.cache/puppeteer/chrome/linux-133.0.6943.126/chrome-linux64/chrome', // Manually set the path
                 args: [
                     "--no-sandbox",
                     "--disable-setuid-sandbox",
