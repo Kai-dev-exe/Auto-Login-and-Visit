@@ -1,3 +1,6 @@
+require("dotenv").config(); // ✅ Load .env file
+console.log("✅ COOKIES from .env:", process.env.COOKIES);
+
 const puppeteer = require("puppeteer");
 const express = require("express");
 
@@ -28,7 +31,7 @@ try {
 
 (async () => {
     console.log("Starting browser...");
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
     // ✅ Only set cookies if correctly parsed
@@ -41,7 +44,7 @@ try {
     }
 
     await page.goto("https://optiklink.com", { waitUntil: "networkidle2", timeout: 60000 });
-
+    
     console.log("Visited successfully! Staying on the page for 2 minutes...");
     await new Promise(resolve => setTimeout(resolve, 2 * 60 * 1000));
 
